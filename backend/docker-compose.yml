@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+
+  backend: 
+    container_name: backend_alternova
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    env_file:
+    - ./src/Docker.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres_database
+    volumes:
+      - ./src:/app
+
+    networks:
+      alternova_net:
+        ipv4_address: 172.18.0.2  # Asigna una dirección IP específica a 'app'
+
+  #! POSTGRESQL
+  postgres_database: #! Hostname 
+    container_name: postgresql_alternova
+    image: postgres:16
+    restart: always
+    ports:
+      - '5432:5432'
+    env_file:
+      - ./src/Docker.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # healthcheck:         
+    #   test: ["CMD-SHELL", "pg_isready -U postgres"]
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
+    networks:
+      alternova_net:
+        ipv4_address: 172.18.0.3  # Asigna una dirección IP específica a 'database'
+
+networks:
+  alternova_net:
+    name:  alternova_net
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
+
+volumes:
+  pgdata:
+    driver: local

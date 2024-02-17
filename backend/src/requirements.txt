@@ -1,0 +1,24 @@
+# requirements.txt
+fastapi 
+sqlmodel 
+uvicorn[standard]
+python-dotenv
+alembic
+databases[postgresql]
+websocket
+psycopg2-binary
+asyncpg 
+python-dotenv
+kafka-python
+pydantic-settings
+python-jose[cryptography]
+passlib[bcrypt]
+pydantic[email]
+
+
+numpy
+pandas
+# opencv-python>=4.1.1
+Pillow>=7.1.2
+# python pep8 
+autopep8
