@@ -10,7 +10,7 @@ from sqlmodel import SQLModel, create_engine
 
 log = logging.getLogger("uvicorn")
 
-# DATABASE_URL=postgresql://postgres:postgres@db:5432/foo
+#? EXample: DATABASE_URL=postgresql://postgres:postgres@db:5432/foo
 DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(

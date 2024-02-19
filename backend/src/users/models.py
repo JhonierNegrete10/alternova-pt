@@ -31,6 +31,7 @@ class UserLogin(BaseModel):
     )
 
 
+# todo: change to userResponse
 class UserOutput(UserBase):
     first_name: str
     last_name: str
@@ -76,5 +77,5 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    sub: Union[str, None] = None
+    email: Union[str, None] = None
     scopes: List[str] = []

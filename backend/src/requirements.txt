@@ -8,13 +8,11 @@ databases[postgresql]
 websocket
 psycopg2-binary
 asyncpg 
-python-dotenv
-kafka-python
 pydantic-settings
 python-jose[cryptography]
 passlib[bcrypt]
 pydantic[email]
-
+python-multipart
 
 numpy
 pandas

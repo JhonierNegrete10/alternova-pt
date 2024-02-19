@@ -1,13 +1,15 @@
-from .token import verify_token
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 
+from .token import verify_token
+
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="login",
-    scopes={
-        "me": "Read information about the current user.",
-        # "items": "Read items."
-    },
+    tokenUrl="users/v2/login",
+    # scheme_name="email",
+    # scopes={
+    #     "me": "Read information about the current user.",
+    #     # "items": "Read items."
+    # },
 )
 
 

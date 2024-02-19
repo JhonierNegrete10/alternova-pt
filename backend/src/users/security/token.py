@@ -32,7 +32,7 @@ def verify_token(token: str, credentials_exception) -> TokenData:
 
         if sub is None:
             raise credentials_exception
-        token_data = TokenData(sub=sub)
+        token_data = TokenData(email=sub)
         return token_data
     except JWTError:
         raise credentials_exception

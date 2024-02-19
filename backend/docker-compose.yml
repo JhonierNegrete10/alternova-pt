@@ -40,6 +40,18 @@ services:
       alternova_net:
         ipv4_address: 172.18.0.3  # Asigna una dirección IP específica a 'database'
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@email.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
 networks:
   alternova_net:
     name:  alternova_net
@@ -52,3 +64,6 @@ networks:
 volumes:
   pgdata:
     driver: local
+  pgadmin-data:
+    driver: local
+
