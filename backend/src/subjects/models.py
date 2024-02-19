@@ -1,8 +1,11 @@
 from datetime import datetime
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from pydantic import BaseModel
 from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from ..enrollments.models import StudentModel
 
 
 class LevelCreate(BaseModel):
@@ -26,6 +29,7 @@ class CareerModel(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     career_name: str
     subjects: list["SubjectModel"] = Relationship(back_populates="career")
+    students: list["StudentModel"] = Relationship(back_populates="career")
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
 
@@ -33,7 +37,7 @@ class CareerModel(SQLModel, table=True):
 class SubjectCreate(BaseModel):
     subject_name: str
     subject_code: str
-
+    credits: int = Field(default=3)
     level_id: Optional[int]
     career_id: Optional[int]
 
@@ -56,7 +60,7 @@ class SubjectModel(SQLModel, table=True):
 
     subject_name: str
     subject_code: str
-
+    credits: int
     level_id: Optional[int] = Field(default=None, foreign_key="levelmodel.id")
 
     prerequisite_subjects: list["SubjectModel"] = Relationship(
@@ -74,8 +78,6 @@ class SubjectModel(SQLModel, table=True):
     updated_at: datetime = datetime.now()
 
 
-LevelModel.update_forward_refs()
-CareerModel.update_forward_refs()
-SubjectModel.update_forward_refs()
-
-
+LevelModel.model_rebuild()
+CareerModel.model_rebuild()
+SubjectModel.model_rebuild()

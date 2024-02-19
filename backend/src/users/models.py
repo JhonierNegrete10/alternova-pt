@@ -31,8 +31,7 @@ class UserLogin(BaseModel):
     )
 
 
-# todo: change to userResponse
-class UserOutput(UserBase):
+class UserResponse(UserBase):
     first_name: str
     last_name: str
     # username: str

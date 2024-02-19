@@ -4,6 +4,7 @@ import logging
 
 import subjects
 import users
+import enrollments
 import uvicorn
 from core.config import settings
 from db.configDatabase import init_db
@@ -24,6 +25,7 @@ app = FastAPI(
 
 app.include_router(users.user_routes)
 app.include_router(subjects.api_routes)
+app.include_router(enrollments.api_routes)
 
 
 @app.on_event("startup")
@@ -42,5 +44,5 @@ if __name__ == "__main__":
         "main:app",
         host="0.0.0.0",
         port=8000,
-        # reload=True,
+        reload=True,
     )

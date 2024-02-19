@@ -1,13 +1,13 @@
 import re
 from typing import List
 
-from db.configDatabase import get_db
+from db.configDatabase import get_session
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 from .crud import user_crud
-from .models import Token, TokenData, UserLogin, UserModel, UserOutput, UserRegister
+from .models import Token, TokenData, UserLogin, UserModel, UserRegister, UserResponse
 from .security.hashing import Hash
 from .security.outh import get_current_user
 from .security.token import create_access_token
@@ -17,7 +17,7 @@ user_routes = APIRouter(prefix="/users", tags=["users"])
 
 # Rutas de FastAPI
 @user_routes.post("/")
-def create_user(user: UserRegister, session: Session = Depends(get_db)):
+def create_user(user: UserRegister, session: Session = Depends(get_session)):
     # Crear el usuario en la base de datos
     # Validar la contraseña con una expresión regular
     if not re.match(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", user.password):
@@ -48,7 +48,7 @@ def create_user(user: UserRegister, session: Session = Depends(get_db)):
 
 
 @user_routes.post("/login")
-def login(user_login: UserLogin, session: Session = Depends(get_db)):
+def login(user_login: UserLogin, session: Session = Depends(get_session)):
     # Check if the user exists in the database
     user_db: UserModel = user_crud.get_by_email(user_login.email.lower(), session)
     if not user_db:
@@ -64,16 +64,16 @@ def login(user_login: UserLogin, session: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@user_routes.get("/", response_model=List[UserOutput])
-def read_users(skip: int = 0, limit: int = 10, session: Session = Depends(get_db)):
+@user_routes.get("/", response_model=List[UserResponse])
+def read_users(skip: int = 0, limit: int = 10, session: Session = Depends(get_session)):
     db_users = user_crud.get_all(skip, limit, session)
     return db_users
 
 
-@user_routes.get("/me", response_model=UserOutput)
+@user_routes.get("/me", response_model=UserResponse)
 def user_info(
     current_user: TokenData = Depends(get_current_user),
-    session: Session = Depends(get_db),
+    session: Session = Depends(get_session),
 ):
     # print(current_user.email)
     data = user_crud.get_by_email(current_user.email, session)
@@ -83,7 +83,8 @@ def user_info(
 
 @user_routes.post("/v2/login", response_model=Token)
 async def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_db)
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    session: Session = Depends(get_session),
 ):
     user_db: UserModel = user_crud.get_by_email(form_data.username.lower(), session)
     if not user_db:

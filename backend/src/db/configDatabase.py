@@ -3,14 +3,11 @@ import logging
 from typing import Generator
 
 from core.config import settings
-
-# from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import Session, SQLModel, create_engine
 
 log = logging.getLogger("uvicorn")
 
-#? EXample: DATABASE_URL=postgresql://postgres:postgres@db:5432/foo
+# ? EXample: DATABASE_URL=postgresql://postgres:postgres@db:5432/foo
 DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(
@@ -21,7 +18,7 @@ engine = create_engine(
     # isolation_level="READ UNCOMMITTED",
 )
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def init_db():
@@ -37,10 +34,9 @@ def init_db():
         print(f"{__name__}: An exception occurred {e}")
 
 
-def get_db() -> Generator:
-    global SessionLocal
+def get_session() -> Generator:
     try:
-        db = SessionLocal()
-        yield db
+        with Session(engine) as session:
+            yield session
     finally:
-        db.close()
+        session.close()
